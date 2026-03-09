@@ -1,0 +1,1431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DSBDA Study Guide — Unit I</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=JetBrains+Mono:wght@400;600&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0c10;
+    --surface: #111318;
+    --surface2: #181c24;
+    --border: #1e2330;
+    --accent: #f0c060;
+    --accent2: #60c0f0;
+    --accent3: #a060f0;
+    --text: #d8dce8;
+    --text-muted: #7a8099;
+    --green: #60f0a0;
+    --red: #f06080;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.3;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 4rem 2rem;
+    position: relative;
+    background: radial-gradient(ellipse 80% 60% at 50% 30%, #1a1430 0%, var(--bg) 70%);
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0; right: 0;
+    height: 120px;
+    background: linear-gradient(to bottom, transparent, var(--bg));
+    pointer-events: none;
+  }
+
+  .hero-glow {
+    position: absolute;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(160,96,240,0.12) 0%, transparent 70%);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -60%);
+    pointer-events: none;
+    animation: pulse 6s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.5; transform: translate(-50%, -60%) scale(1); }
+    50% { opacity: 1; transform: translate(-50%, -60%) scale(1.1); }
+  }
+
+  .hero-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: rgba(240,192,96,0.1);
+    border: 1px solid rgba(240,192,96,0.25);
+    padding: 0.35rem 1rem;
+    border-radius: 2rem;
+    margin-bottom: 2rem;
+    display: inline-block;
+    animation: fadeDown 0.8s ease both;
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.8rem, 7vw, 6rem);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+    animation: fadeDown 0.8s 0.15s ease both;
+  }
+
+  .hero h1 span { color: var(--accent); }
+
+  .hero-sub {
+    font-size: 1.15rem;
+    color: var(--text-muted);
+    max-width: 560px;
+    font-style: italic;
+    animation: fadeDown 0.8s 0.3s ease both;
+    margin-bottom: 3rem;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 3rem;
+    animation: fadeDown 0.8s 0.45s ease both;
+  }
+
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--accent);
+    display: block;
+  }
+  .stat-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── LAYOUT ── */
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  /* ── SIDEBAR + CONTENT ── */
+  .layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 0;
+    min-height: 100vh;
+    align-items: start;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 2rem 1.5rem;
+  }
+
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .sidebar-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 1.2rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-section { margin-bottom: 1.5rem; }
+
+  .nav-section-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+    padding: 0.2rem 0.5rem;
+  }
+
+  .nav-link {
+    display: block;
+    padding: 0.4rem 0.75rem;
+    font-family: 'Crimson Pro', serif;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    border-radius: 6px;
+    transition: all 0.2s;
+    border-left: 2px solid transparent;
+    margin-bottom: 2px;
+  }
+
+  .nav-link:hover {
+    color: var(--text);
+    background: var(--surface2);
+    border-left-color: var(--accent);
+    padding-left: 1rem;
+  }
+
+  /* ── MAIN CONTENT ── */
+  .main {
+    padding: 4rem 3rem;
+  }
+
+  /* ── SECTION ── */
+  .section {
+    margin-bottom: 5rem;
+    animation: fadeIn 0.6s ease both;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--accent);
+    background: rgba(240,192,96,0.1);
+    border: 1px solid rgba(240,192,96,0.2);
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  /* ── TOPIC CARD ── */
+  .topic-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    transition: border-color 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .topic-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--accent2);
+  }
+
+  .topic-card:hover { border-color: rgba(96,192,240,0.3); }
+
+  .topic-card.gold::before { background: var(--accent); }
+  .topic-card.purple::before { background: var(--accent3); }
+  .topic-card.green::before { background: var(--green); }
+
+  .topic-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 0.6rem;
+    display: block;
+  }
+
+  .topic-card.gold .topic-label { color: var(--accent); }
+  .topic-card.purple .topic-label { color: var(--accent3); }
+  .topic-card.green .topic-label { color: var(--green); }
+
+  .topic-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 1rem;
+  }
+
+  .topic-body { color: var(--text); font-size: 1rem; }
+
+  /* ── DEFINITION BOX ── */
+  .def-box {
+    background: rgba(96,192,240,0.06);
+    border: 1px solid rgba(96,192,240,0.2);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin: 1rem 0;
+    font-style: italic;
+    color: var(--accent2);
+  }
+
+  .def-box.gold {
+    background: rgba(240,192,96,0.06);
+    border-color: rgba(240,192,96,0.2);
+    color: var(--accent);
+  }
+
+  .def-box.purple {
+    background: rgba(160,96,240,0.06);
+    border-color: rgba(160,96,240,0.2);
+    color: var(--accent3);
+  }
+
+  /* ── TABLE ── */
+  .table-wrap { overflow-x: auto; margin: 1.25rem 0; border-radius: 8px; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+  }
+
+  th {
+    background: var(--surface2);
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  td {
+    padding: 0.65rem 1rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    vertical-align: top;
+  }
+
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  /* ── V-CARD GRID ── */
+  .v-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .v-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+
+  .v-card:hover { transform: translateY(-3px); border-color: var(--accent); }
+
+  .v-card-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 0.3rem;
+  }
+
+  .v-card-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin-bottom: 0.6rem;
+  }
+
+  .v-card-desc { font-size: 0.9rem; color: var(--text); }
+
+  /* ── QA SECTION ── */
+  .qa-section {
+    margin-bottom: 5rem;
+  }
+
+  .qa-header {
+    background: linear-gradient(135deg, var(--surface) 0%, var(--surface2) 100%);
+    border: 1px solid var(--border);
+    border-radius: 12px 12px 0 0;
+    padding: 1.5rem 2rem;
+    border-bottom: 2px solid var(--accent);
+  }
+
+  .qa-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.4rem;
+    display: block;
+  }
+
+  .qa-question {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.4;
+  }
+
+  .qa-marks {
+    display: inline-block;
+    margin-top: 0.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--green);
+    background: rgba(96,240,160,0.1);
+    border: 1px solid rgba(96,240,160,0.25);
+    padding: 0.2rem 0.6rem;
+    border-radius: 3rem;
+  }
+
+  .qa-answer {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: none;
+    border-radius: 0 0 12px 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  /* ── HEADINGS IN ANSWERS ── */
+  .qa-answer h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--accent2);
+    margin: 1.5rem 0 0.75rem;
+    padding-left: 0.75rem;
+    border-left: 3px solid var(--accent2);
+  }
+
+  .qa-answer h4 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 1.2rem 0 0.5rem;
+  }
+
+  .qa-answer p { margin-bottom: 0.85rem; }
+
+  /* ── POINT LIST ── */
+  .point-list { list-style: none; margin: 0.75rem 0; }
+  .point-list li {
+    padding: 0.3rem 0 0.3rem 1.5rem;
+    position: relative;
+    font-size: 0.97rem;
+  }
+  .point-list li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ── KEY POINTS BOX ── */
+  .key-box {
+    background: rgba(96,240,160,0.05);
+    border: 1px solid rgba(96,240,160,0.2);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .key-box-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .key-box-title::before {
+    content: '★';
+    font-size: 0.8rem;
+  }
+
+  .key-box ul { list-style: none; }
+  .key-box ul li {
+    padding: 0.2rem 0 0.2rem 1.2rem;
+    position: relative;
+    font-size: 0.92rem;
+    color: var(--text);
+  }
+  .key-box ul li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: var(--green);
+    font-size: 0.8rem;
+  }
+
+  /* ── ARCH DIAGRAM ── */
+  .arch-diagram {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--accent2);
+    white-space: pre;
+    overflow-x: auto;
+    line-height: 1.6;
+    margin: 1rem 0;
+  }
+
+  /* ── SEPARATOR ── */
+  .sep {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 3rem 0;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+  }
+
+  footer span { color: var(--accent); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 800px) {
+    .layout { grid-template-columns: 1fr; }
+    .sidebar { position: static; height: auto; border-right: none; border-bottom: 1px solid var(--border); }
+    .main { padding: 2rem 1.25rem; }
+    .hero-stats { gap: 1.5rem; }
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+  /* ── CHIP ── */
+  .chip {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    font-weight: 600;
+    padding: 0.2rem 0.55rem;
+    border-radius: 3rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin: 0.15rem;
+  }
+  .chip-blue { background: rgba(96,192,240,0.12); color: var(--accent2); border: 1px solid rgba(96,192,240,0.25); }
+  .chip-gold { background: rgba(240,192,96,0.12); color: var(--accent); border: 1px solid rgba(240,192,96,0.25); }
+  .chip-purple { background: rgba(160,96,240,0.12); color: var(--accent3); border: 1px solid rgba(160,96,240,0.25); }
+  .chip-green { background: rgba(96,240,160,0.12); color: var(--green); border: 1px solid rgba(96,240,160,0.25); }
+
+  /* ── DIAGRAM BOX ── */
+  .diagram-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 2rem;
+    margin: 1.5rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .diagram-layer {
+    border: 1px solid;
+    border-radius: 8px;
+    padding: 0.6rem 2rem;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    font-weight: 600;
+    width: 100%;
+    max-width: 420px;
+    letter-spacing: 0.05em;
+  }
+
+  .dl-ai { border-color: rgba(240,192,96,0.5); color: var(--accent); background: rgba(240,192,96,0.07); max-width: 420px; }
+  .dl-ml { border-color: rgba(96,192,240,0.5); color: var(--accent2); background: rgba(96,192,240,0.07); max-width: 360px; }
+  .dl-sl { border-color: rgba(160,96,240,0.5); color: var(--accent3); background: rgba(160,96,240,0.07); max-width: 300px; }
+  .dl-dm { border-color: rgba(96,240,160,0.5); color: var(--green); background: rgba(96,240,160,0.07); max-width: 300px; }
+  .dl-bda { border-color: rgba(240,96,128,0.5); color: var(--red); background: rgba(240,96,128,0.07); max-width: 360px; }
+  .dl-ds { border-color: rgba(255,255,255,0.2); color: #fff; background: rgba(255,255,255,0.04); max-width: 420px; }
+
+  .diagram-arrow {
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    line-height: 1;
+  }
+
+  .pipeline {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 1rem 0;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .pipe-step {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.5rem 0.9rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--accent2);
+    text-align: center;
+  }
+
+  .pipe-arrow {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-badge">DSBDA · Unit I · Complete Study Guide</div>
+  <h1>Data Science &amp;<br><span>Big Data Analytics</span></h1>
+  <p class="hero-sub">A comprehensive revision guide covering all topics and exam questions from Unit I</p>
+  <div class="hero-stats">
+    <div class="stat">
+      <span class="stat-num">6</span>
+      <span class="stat-label">Topics Covered</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">8</span>
+      <span class="stat-label">Exam Q&amp;A</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">6</span>
+      <span class="stat-label">Hours Content</span>
+    </div>
+  </div>
+</section>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-title">Navigation</div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">📚 Topics</div>
+      <a class="nav-link" href="#t1">1. Intro to DS &amp; Big Data</a>
+      <a class="nav-link" href="#t2">2. The 6 V's</a>
+      <a class="nav-link" href="#t3">3. Infrastructure &amp; Challenges</a>
+      <a class="nav-link" href="#t4">4. Processing Architectures</a>
+      <a class="nav-link" href="#t5">5. Learning Approaches</a>
+      <a class="nav-link" href="#t6">6. The Big Picture (AI, ML…)</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">📝 Exam Q&amp;A — Set 1</div>
+      <a class="nav-link" href="#q1a">Q1a) 6 V's + Data Explosion</a>
+      <a class="nav-link" href="#q1b">Q1b) Infrastructure Challenges</a>
+      <a class="nav-link" href="#q2a">Q2a) Reengineering DW</a>
+      <a class="nav-link" href="#q2b">Q2b) Shared Architectures</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">📝 Exam Q&amp;A — Set 2</div>
+      <a class="nav-link" href="#q3a">Q1a) Data Explosion Justify</a>
+      <a class="nav-link" href="#q3b">Q1b) Big Data vs Small Data</a>
+      <a class="nav-link" href="#q4a">Q2a) AI, SL &amp; ML Relation</a>
+      <a class="nav-link" href="#q4b">Q2b) DW vs Data Mining</a>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- ══════════════════════════════════════════ -->
+    <!-- TOPICS -->
+    <!-- ══════════════════════════════════════════ -->
+
+    <!-- T1: INTRO -->
+    <section class="section" id="t1">
+      <div class="section-header">
+        <span class="section-num">TOPIC 01</span>
+        <h2 class="section-title">Introduction to Data Science &amp; Big Data</h2>
+      </div>
+
+      <div class="topic-card gold">
+        <span class="topic-label">Definition</span>
+        <div class="topic-title">What is Data Science?</div>
+        <div class="topic-body">
+          <div class="def-box gold">Data Science is an interdisciplinary field that uses scientific methods, algorithms, processes, and systems to extract knowledge and insights from structured and unstructured data.</div>
+          <p>It combines <strong>Statistics</strong>, <strong>Mathematics</strong>, <strong>Programming</strong> (Python, R), <strong>Domain Knowledge</strong>, and <strong>Machine Learning</strong>.</p>
+        </div>
+      </div>
+
+      <div class="topic-card">
+        <span class="topic-label">Definition</span>
+        <div class="topic-title">What is Big Data?</div>
+        <div class="topic-body">
+          <div class="def-box">Big Data refers to extremely large datasets that cannot be stored, processed, or analyzed using traditional data processing tools.</div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Source</th><th>Data Generated</th></tr></thead>
+              <tbody>
+                <tr><td>Facebook</td><td>500 TB of data/day</td></tr>
+                <tr><td>Google</td><td>3.5 billion searches/day</td></tr>
+                <tr><td>Twitter</td><td>500 million tweets/day</td></tr>
+                <tr><td>YouTube</td><td>500 hours of video/min</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="key-box">
+        <div class="key-box-title">Key Exam Points</div>
+        <ul>
+          <li>Data Science = Statistics + Programming + Domain Knowledge</li>
+          <li>Big Data = Data too large for traditional tools</li>
+          <li>Both are complementary — Big Data provides raw material, Data Science extracts value</li>
+        </ul>
+      </div>
+    </section>
+
+    <hr class="sep">
+
+    <!-- T2: 6 V's -->
+    <section class="section" id="t2">
+      <div class="section-header">
+        <span class="section-num">TOPIC 02</span>
+        <h2 class="section-title">Data Explosion — The 6 V's of Big Data</h2>
+      </div>
+
+      <p style="margin-bottom:1.5rem; color: var(--text-muted); font-style:italic;">Data Explosion refers to the rapid and massive growth of data generated every second from various digital sources.</p>
+
+      <div class="v-grid">
+        <div class="v-card">
+          <div class="v-card-num">V1</div>
+          <div class="v-card-title">Volume</div>
+          <div class="v-card-desc">Enormous amount of data. Measured in TB, PB, EB, ZB. Facebook generates 500 TB/day.</div>
+        </div>
+        <div class="v-card">
+          <div class="v-card-num">V2</div>
+          <div class="v-card-title">Variety</div>
+          <div class="v-card-desc">Different types: Structured, Semi-structured, Unstructured. 80% of world's data is unstructured.</div>
+        </div>
+        <div class="v-card">
+          <div class="v-card-num">V3</div>
+          <div class="v-card-title">Velocity</div>
+          <div class="v-card-desc">Speed of generation and processing. Twitter: 6,000 tweets/sec. Needs real-time processing.</div>
+        </div>
+        <div class="v-card">
+          <div class="v-card-num">V4</div>
+          <div class="v-card-title">Veracity</div>
+          <div class="v-card-desc">Quality and trustworthiness. Data contains noise, missing values, duplicates, bias.</div>
+        </div>
+        <div class="v-card">
+          <div class="v-card-num">V5</div>
+          <div class="v-card-title">Value</div>
+          <div class="v-card-desc">Business benefit extracted. Raw data has no meaning until processed for actionable insights.</div>
+        </div>
+        <div class="v-card">
+          <div class="v-card-num">V6</div>
+          <div class="v-card-title">Variability</div>
+          <div class="v-card-desc">Inconsistency in flow and meaning of data. Same word can mean different things in different contexts.</div>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>V</th><th>Meaning</th><th>Challenge</th><th>Solution</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Volume</strong></td><td>Huge amount</td><td>Storage &amp; processing</td><td>Hadoop, Cloud Storage</td></tr>
+            <tr><td><strong>Variety</strong></td><td>Different types</td><td>Integration</td><td>NoSQL, Data Lakes</td></tr>
+            <tr><td><strong>Velocity</strong></td><td>High speed</td><td>Real-time processing</td><td>Spark, Kafka</td></tr>
+            <tr><td><strong>Veracity</strong></td><td>Data quality</td><td>Trust &amp; accuracy</td><td>Data Cleaning</td></tr>
+            <tr><td><strong>Value</strong></td><td>Usefulness</td><td>Extracting insight</td><td>Analytics, ML</td></tr>
+            <tr><td><strong>Variability</strong></td><td>Context inconsistency</td><td>Contextual meaning</td><td>NLP, Semantic Analysis</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <hr class="sep">
+
+    <!-- T3: INFRASTRUCTURE -->
+    <section class="section" id="t3">
+      <div class="section-header">
+        <span class="section-num">TOPIC 03</span>
+        <h2 class="section-title">Big Data Infrastructure &amp; Challenges</h2>
+      </div>
+
+      <div class="topic-card purple">
+        <span class="topic-label">Theory</span>
+        <div class="topic-title">5 Layers of Big Data Infrastructure</div>
+        <div class="topic-body">
+          <ul class="point-list">
+            <li><strong>Layer 1 — Data Source Layer:</strong> Where data originates — social media, IoT, sensors, mobile devices, transactions.</li>
+            <li><strong>Layer 2 — Data Ingestion Layer:</strong> Collecting &amp; importing data. Batch ingestion or real-time/stream ingestion.</li>
+            <li><strong>Layer 3 — Data Storage Layer:</strong> Distributed storage — HDFS, NoSQL, Data Lakes, Data Warehouses. Horizontal scaling.</li>
+            <li><strong>Layer 4 — Data Processing Layer:</strong> Transforming raw data — Batch Processing (Hadoop) or Stream Processing (Spark, Kafka).</li>
+            <li><strong>Layer 5 — Analysis &amp; Visualization Layer:</strong> ML, Data Mining, Statistical analysis — then dashboards, charts for business use.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="topic-card">
+        <span class="topic-label">Challenges</span>
+        <div class="topic-title">8 Major Infrastructure Challenges</div>
+        <div class="topic-body">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Challenge</th><th>Cause</th><th>Solution</th></tr></thead>
+              <tbody>
+                <tr><td>Storage</td><td>Huge data volume</td><td>HDFS, Cloud</td></tr>
+                <tr><td>Processing</td><td>Slow traditional systems</td><td>Hadoop, Spark</td></tr>
+                <tr><td>Data Quality</td><td>Noisy, incomplete data</td><td>Data Cleaning</td></tr>
+                <tr><td>Security &amp; Privacy</td><td>Sensitive data exposure</td><td>Encryption, GDPR</td></tr>
+                <tr><td>Integration</td><td>Multiple data formats</td><td>ETL, Data Lakes</td></tr>
+                <tr><td>Real-time Processing</td><td>Need for instant analysis</td><td>Kafka, Spark Streaming</td></tr>
+                <tr><td>Skilled Workforce</td><td>Shortage of experts</td><td>Training, Automation</td></tr>
+                <tr><td>Cost</td><td>Expensive infrastructure</td><td>Open-source, Cloud</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="sep">
+
+    <!-- T4: ARCHITECTURES -->
+    <section class="section" id="t4">
+      <div class="section-header">
+        <span class="section-num">TOPIC 04</span>
+        <h2 class="section-title">Big Data Processing Architectures</h2>
+      </div>
+
+      <div class="topic-card gold">
+        <span class="topic-label">Architecture 1</span>
+        <div class="topic-title">Data Warehouse</div>
+        <div class="topic-body">
+          <div class="def-box gold">A centralized repository that stores large amounts of structured, historical data collected from multiple sources for reporting, querying, and analysis.</div>
+          <p><strong>4 Key Properties:</strong></p>
+          <ul class="point-list">
+            <li><strong>Subject-Oriented</strong> — Organized around subjects like sales, finance, customers</li>
+            <li><strong>Integrated</strong> — Combines data from multiple heterogeneous sources</li>
+            <li><strong>Non-Volatile</strong> — Data is not deleted or modified once stored</li>
+            <li><strong>Time-Variant</strong> — Stores historical data over long periods (5–10 years)</li>
+          </ul>
+          <p style="margin-top:0.75rem;"><strong>ETL Process:</strong></p>
+          <div class="pipeline">
+            <div class="pipe-step">Extract</div><div class="pipe-arrow">→</div>
+            <div class="pipe-step">Transform</div><div class="pipe-arrow">→</div>
+            <div class="pipe-step">Load</div><div class="pipe-arrow">→</div>
+            <div class="pipe-step">Query &amp; Report</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="topic-card">
+        <span class="topic-label">Architecture 2</span>
+        <div class="topic-title">Re-Engineering the Data Warehouse</div>
+        <div class="topic-body">
+          <p>Traditional DW was inadequate for Big Data — needed modernization by integrating new technologies.</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Traditional DW</th><th>Re-Engineered DW</th></tr></thead>
+              <tbody>
+                <tr><td>Handles only structured data</td><td>Structured + Unstructured</td></tr>
+                <tr><td>Batch processing only</td><td>Supports real-time processing</td></tr>
+                <tr><td>Fixed, rigid schema</td><td>Flexible, dynamic schema</td></tr>
+                <tr><td>ETL</td><td>ELT (Extract-Load-Transform)</td></tr>
+                <tr><td>Expensive proprietary systems</td><td>Open-source Big Data tools</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="topic-card green">
+        <span class="topic-label">Architecture 3 &amp; 4</span>
+        <div class="topic-title">Shared Everything vs Shared Nothing</div>
+        <div class="topic-body">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Feature</th><th>Shared Everything</th><th>Shared Nothing</th></tr></thead>
+              <tbody>
+                <tr><td>Resources</td><td>All nodes share memory &amp; storage</td><td>Each node has own resources</td></tr>
+                <tr><td>Scalability</td><td>Limited (vertical)</td><td>High (horizontal)</td></tr>
+                <tr><td>Fault Tolerance</td><td>Low — single point of failure</td><td>High — independent nodes</td></tr>
+                <tr><td>Cost</td><td>Expensive hardware</td><td>Cheap commodity hardware</td></tr>
+                <tr><td>Communication</td><td>Shared memory (fast)</td><td>Network (slower)</td></tr>
+                <tr><td>Big Data Suitable?</td><td>❌ No</td><td>✅ Yes (Hadoop)</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="sep">
+
+    <!-- T5: LEARNING APPROACHES -->
+    <section class="section" id="t5">
+      <div class="section-header">
+        <span class="section-num">TOPIC 05</span>
+        <h2 class="section-title">Big Data Learning Approaches</h2>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Approach</th><th>How it Works</th><th>Real-time?</th><th>Best For</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Batch Learning</strong></td><td>Train on full dataset at once, retrain periodically</td><td>❌ No</td><td>Stable, large datasets</td></tr>
+            <tr><td><strong>Online Learning</strong></td><td>Updates model continuously as new data arrives</td><td>✅ Yes</td><td>Streaming, real-time data</td></tr>
+            <tr><td><strong>Distributed Learning</strong></td><td>Dataset partitioned across nodes, trains in parallel</td><td>✅ Partially</td><td>Petabyte-scale data</td></tr>
+            <tr><td><strong>Active Learning</strong></td><td>Model selects uncertain points for human labeling</td><td>❌ No</td><td>Limited labeled data</td></tr>
+            <tr><td><strong>Transfer Learning</strong></td><td>Reuse knowledge from one task for another</td><td>❌ No</td><td>Related tasks, less data</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <hr class="sep">
+
+    <!-- T6: BIG PICTURE -->
+    <section class="section" id="t6">
+      <div class="section-header">
+        <span class="section-num">TOPIC 06</span>
+        <h2 class="section-title">Data Science — The Big Picture</h2>
+      </div>
+
+      <div class="diagram-box">
+        <div class="diagram-layer dl-ai">🤖 ARTIFICIAL INTELLIGENCE — Intelligent Machines (Broadest)</div>
+        <div class="diagram-arrow">↓ contains</div>
+        <div class="diagram-layer dl-ml">⚙️ MACHINE LEARNING — Learn from Data</div>
+        <div class="diagram-arrow">↓ built on</div>
+        <div class="diagram-layer dl-sl">📐 STATISTICAL LEARNING — Mathematical Foundation</div>
+        <div class="diagram-arrow">+</div>
+        <div class="diagram-layer dl-dm">🔍 DATA MINING — Pattern Discovery</div>
+        <div class="diagram-arrow">+</div>
+        <div class="diagram-layer dl-bda">📊 BIG DATA ANALYTICS — Analytics at Scale</div>
+        <div class="diagram-arrow">= all together</div>
+        <div class="diagram-layer dl-ds">🌐 DATA SCIENCE — The Complete Field</div>
+      </div>
+
+      <div class="table-wrap" style="margin-top:1.5rem;">
+        <table>
+          <thead><tr><th>Field</th><th>Focus</th><th>Data Size</th><th>Approach</th></tr></thead>
+          <tbody>
+            <tr><td><strong>AI</strong></td><td>Intelligent behavior</td><td>Any</td><td>Goal-oriented</td></tr>
+            <tr><td><strong>Statistical Learning</strong></td><td>Inference &amp; understanding</td><td>Small–Medium</td><td>Mathematical &amp; theoretical</td></tr>
+            <tr><td><strong>Machine Learning</strong></td><td>Prediction &amp; accuracy</td><td>Large</td><td>Computational &amp; algorithmic</td></tr>
+            <tr><td><strong>Data Mining</strong></td><td>Pattern discovery (KDD)</td><td>Large historical</td><td>Statistical + DB techniques</td></tr>
+            <tr><td><strong>Big Data Analytics</strong></td><td>Insights at massive scale</td><td>Petabyte+</td><td>Distributed computing</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <hr class="sep">
+
+    <!-- ══════════════════════════════════════════ -->
+    <!-- EXAM Q&A SET 1 -->
+    <!-- ══════════════════════════════════════════ -->
+
+    <section class="section">
+      <div class="section-header">
+        <span class="section-num">EXAM SET 1</span>
+        <h2 class="section-title">Question &amp; Answer — Paper 1</h2>
+      </div>
+
+      <!-- Q1a -->
+      <div id="q1a">
+        <div class="qa-header">
+          <span class="qa-label">Q1 · Part A</span>
+          <div class="qa-question">Explain 6 V's for defining Big Data along with the factors responsible for data explosion.</div>
+          <span class="qa-marks">8 Marks</span>
+        </div>
+        <div class="qa-answer">
+          <h3>The 6 V's of Big Data</h3>
+
+          <h4>1. Volume</h4>
+          <p>Volume refers to the enormous amount of data generated every second from various sources such as social media, IoT devices, transactions, and sensors. The scale of data ranges from terabytes to petabytes and beyond. Traditional storage systems are incapable of handling such massive quantities of data, which necessitates distributed storage solutions like HDFS and cloud storage.<br><em>Example: Facebook generates over 500 terabytes of data every single day.</em></p>
+
+          <h4>2. Variety</h4>
+          <p>Variety refers to the different types and formats of data being generated. Data now includes Structured data (tables, spreadsheets), Semi-structured data (XML, JSON, emails), and Unstructured data (images, videos, audio, social media posts).<br><em>Example: A hospital generates structured patient records, semi-structured lab reports in XML, and unstructured MRI scan images — all simultaneously.</em></p>
+
+          <h4>3. Velocity</h4>
+          <p>Velocity refers to the speed at which data is generated, collected, and must be processed. In many modern applications, data must be processed in real time or near real time to be useful.<br><em>Example: Credit card companies must analyze transactions within milliseconds to detect fraud before it causes financial loss.</em></p>
+
+          <h4>4. Veracity</h4>
+          <p>Veracity refers to the quality, accuracy, and trustworthiness of data. Big Data often contains noise, inconsistencies, missing values, and duplicate records. Poor quality data leads to incorrect analysis and wrong business decisions.<br><em>Example: Social media data contains fake profiles, bots, and spam — making it unreliable without proper cleaning.</em></p>
+
+          <h4>5. Value</h4>
+          <p>Value refers to the usefulness and business benefit extracted from Big Data. Raw data by itself has no meaning — it must be processed and analyzed to derive actionable insights that create real business value.<br><em>Example: Amazon analyzes customer purchase history to recommend products, directly increasing sales revenue.</em></p>
+
+          <h4>6. Variability</h4>
+          <p>Variability refers to the inconsistency in the flow and meaning of data over time. The same data can mean different things in different contexts, and the rate of data generation fluctuates.<br><em>Example: The word "hot" in a weather report means high temperature, but in music it means trending — such contextual inconsistency is a major challenge.</em></p>
+
+          <h3>Factors Responsible for Data Explosion</h3>
+          <ul class="point-list">
+            <li><strong>Social Media Platforms:</strong> Billions of users on Facebook, Instagram, Twitter generate massive amounts of text, images, and videos every second.</li>
+            <li><strong>Internet of Things (IoT):</strong> Billions of connected devices — smart sensors, wearables, industrial machines — continuously generate and transmit data.</li>
+            <li><strong>Mobile Devices:</strong> Widespread use of smartphones enables continuous generation of data through calls, messages, app usage, GPS, photos, and videos.</li>
+            <li><strong>E-Commerce &amp; Digital Transactions:</strong> Online shopping platforms, banking systems, and digital payment services generate millions of transaction records daily.</li>
+            <li><strong>Cloud Computing:</strong> Availability of affordable cloud storage encourages organizations to store more data than ever before.</li>
+            <li><strong>Multimedia Content:</strong> Video streaming platforms like YouTube and Netflix along with digital photography contribute enormous volumes of unstructured data daily.</li>
+          </ul>
+
+          <div class="key-box">
+            <div class="key-box-title">Key Points to Remember</div>
+            <ul>
+              <li>6 V's = Volume, Variety, Velocity, Veracity, Value, Variability</li>
+              <li>Data Explosion is the root cause — it created all 6 V's</li>
+              <li>80% of world's data is unstructured (Variety)</li>
+              <li>Traditional tools fail because of all 6 V's together</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q1b -->
+      <div id="q1b">
+        <div class="qa-header">
+          <span class="qa-label">Q1 · Part B</span>
+          <div class="qa-question">List and explain data processing infrastructure challenges in Big Data with suitable examples.</div>
+          <span class="qa-marks">7 Marks</span>
+        </div>
+        <div class="qa-answer">
+          <h3>Definition</h3>
+          <p>Big Data infrastructure challenges refer to the technical, operational, and organizational difficulties faced when building and maintaining systems to store, process, and analyze large-scale data.</p>
+
+          <h4>Challenge 1: Data Storage and Management</h4>
+          <p>Storing petabytes of data generated continuously from multiple sources is a major challenge. Traditional relational databases have fixed storage limits and cannot scale to accommodate Big Data volumes. Organizations must invest in distributed storage systems that can expand horizontally.<br><em>Example: Walmart processes 2.5 petabytes of customer transaction data every hour — storing this on a single server is completely impossible.</em></p>
+
+          <h4>Challenge 2: Real-time Data Processing</h4>
+          <p>Many Big Data applications require data to be processed instantly as it arrives. Traditional batch processing systems introduce delays that are unacceptable in time-sensitive scenarios.<br><em>Example: A stock trading platform must process millions of price updates per second and execute trades in milliseconds — any delay results in financial loss.</em></p>
+
+          <h4>Challenge 3: Data Heterogeneity and Integration</h4>
+          <p>Big Data arrives from multiple sources in different formats — structured databases, semi-structured logs, and unstructured social media posts. Integrating all these heterogeneous data types into a unified processing system is technically challenging.<br><em>Example: A healthcare organization must integrate structured patient records, semi-structured XML doctor notes, and unstructured MRI scan images into one analytical system.</em></p>
+
+          <h4>Challenge 4: Data Quality and Veracity</h4>
+          <p>Big Data collected from diverse sources often contains errors, missing values, duplicates, and inconsistencies. Poor quality data directly affects the accuracy of analysis and business decisions.<br><em>Example: Customer data collected from online forms may contain duplicate entries, misspelled names, and missing phone numbers.</em></p>
+
+          <h4>Challenge 5: Data Security and Privacy</h4>
+          <p>Big Data systems store sensitive personal, financial, and medical information. Protecting this data from unauthorized access and breaches is a major challenge. Organizations must also comply with data protection regulations such as GDPR.<br><em>Example: A bank's Big Data system storing millions of customer account details is a prime target for hackers.</em></p>
+
+          <h4>Challenge 6: Scalability of Infrastructure</h4>
+          <p>As data volumes grow continuously, the infrastructure must scale up efficiently without disruption. Designing systems that can add more nodes and storage capacity seamlessly is a key challenge.<br><em>Example: Instagram experiences sudden spikes in data during major events — the infrastructure must scale instantly to handle the load.</em></p>
+
+          <h4>Challenge 7: Cost of Infrastructure</h4>
+          <p>Building and maintaining Big Data infrastructure requires significant investment in hardware, software, networking, and skilled personnel. For smaller organizations, this cost is a major barrier.<br><em>Example: Setting up an on-premise Hadoop cluster requires millions of rupees in hardware and maintenance costs alone.</em></p>
+        </div>
+      </div>
+
+      <!-- Q2a -->
+      <div id="q2a">
+        <div class="qa-header">
+          <span class="qa-label">Q2 · Part A</span>
+          <div class="qa-question">List and explain choices for reengineering the data warehouse.</div>
+          <span class="qa-marks">8 Marks</span>
+        </div>
+        <div class="qa-answer">
+          <h3>Why Reengineer the Data Warehouse?</h3>
+          <p>Traditional Data Warehouses were designed for structured, slow-moving data. With the arrival of Big Data, they became inadequate because they could not handle unstructured data, real-time streams, or petabyte-scale volumes. Reengineering involves modernizing the data warehouse by integrating new technologies.</p>
+
+          <h4>Choice 1: Adopting ELT over ETL</h4>
+          <p>Traditional ETL (Extract → Transform → Load) transforms data before loading. Reengineered ELT (Extract → Load → Transform) loads raw data first, then transforms as needed. This is faster and more flexible, especially for large volumes of unstructured data.</p>
+
+          <h4>Choice 2: Integration of Data Lakes</h4>
+          <p>A Data Lake is a centralized repository that stores raw, unstructured, and semi-structured data in its native format. Integrating Data Lakes alongside the Data Warehouse creates a complete analytical ecosystem that supports all data types.</p>
+
+          <h4>Choice 3: Moving to Cloud-Based Data Warehouses</h4>
+          <p>On-premise warehouses are replaced or supplemented with cloud-based solutions such as Amazon Redshift, Google BigQuery, and Microsoft Azure Synapse. Cloud warehouses offer elastic scalability, pay-as-you-go pricing, and automatic maintenance.</p>
+
+          <h4>Choice 4: Incorporating Distributed Processing Frameworks</h4>
+          <p>Reengineered data warehouses integrate Apache Hadoop and Apache Spark to handle large-scale data processing. These frameworks can process petabytes of data in parallel across hundreds of machines.</p>
+
+          <h4>Choice 5: Real-time Streaming Integration</h4>
+          <p>Traditional warehouses only supported batch loading. Reengineering integrates real-time streaming pipelines using Apache Kafka and Spark Streaming, enabling live dashboards, instant fraud detection, and real-time customer personalization.</p>
+
+          <h4>Choice 6: Schema-on-Read instead of Schema-on-Write</h4>
+          <p>Traditional approach (Schema-on-Write) requires data to conform to a predefined schema before storage. Schema-on-Read stores data in raw format and applies the schema only when reading for analysis, providing much greater flexibility.</p>
+
+          <h4>Choice 7: Use of NoSQL Databases</h4>
+          <p>Traditional warehouses rely exclusively on relational databases. Reengineering introduces NoSQL databases such as MongoDB, Cassandra, and HBase to handle unstructured and semi-structured data with horizontal scalability.</p>
+        </div>
+      </div>
+
+      <!-- Q2b -->
+      <div id="q2b">
+        <div class="qa-header">
+          <span class="qa-label">Q2 · Part B</span>
+          <div class="qa-question">Explain shared-everything and shared-nothing architectures in detail with respect to Big Data.</div>
+          <span class="qa-marks">7 Marks</span>
+        </div>
+        <div class="qa-answer">
+          <h3>Shared-Everything Architecture</h3>
+          <div class="def-box">A system design in which all processors share a common pool of memory, storage, and other resources. The entire system operates as a single unified machine.</div>
+          <ul class="point-list">
+            <li>All nodes share common RAM, CPU, and Disk storage</li>
+            <li>Communication happens through shared memory — very fast</li>
+            <li>Typically implemented as Symmetric Multiprocessing (SMP) systems</li>
+            <li><strong>Limitation:</strong> Poor scalability — contention for shared resources as processors increase</li>
+            <li><strong>Big Data:</strong> NOT suitable — cannot scale to petabyte-scale workloads</li>
+          </ul>
+
+          <h3>Shared-Nothing Architecture</h3>
+          <div class="def-box">A system design in which each node is completely independent and has its own dedicated CPU, memory, and disk storage. Nodes communicate only through a network.</div>
+          <ul class="point-list">
+            <li>Each node is self-contained with own CPU, RAM, and Disk</li>
+            <li>Data is horizontally partitioned across all nodes</li>
+            <li>Adding more nodes increases both storage and processing capacity</li>
+            <li>Forms the foundation of Hadoop, Cassandra, and most Big Data systems</li>
+            <li><strong>Big Data:</strong> IDEAL — scales horizontally, fault tolerant, processes in parallel</li>
+          </ul>
+
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Feature</th><th>Shared Everything</th><th>Shared Nothing</th></tr></thead>
+              <tbody>
+                <tr><td>Resource Sharing</td><td>All resources shared</td><td>Each node independent</td></tr>
+                <tr><td>Scalability</td><td>Limited — vertical only</td><td>High — horizontal</td></tr>
+                <tr><td>Fault Tolerance</td><td>Low — single point of failure</td><td>High — independent nodes</td></tr>
+                <tr><td>Cost</td><td>Expensive high-end hardware</td><td>Cheap commodity hardware</td></tr>
+                <tr><td>Big Data Suitable?</td><td>❌ Not suitable</td><td>✅ Ideal (used in Hadoop)</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="sep">
+
+    <!-- ══════════════════════════════════════════ -->
+    <!-- EXAM Q&A SET 2 -->
+    <!-- ══════════════════════════════════════════ -->
+
+    <section class="section">
+      <div class="section-header">
+        <span class="section-num">EXAM SET 2</span>
+        <h2 class="section-title">Question &amp; Answer — Paper 2</h2>
+      </div>
+
+      <!-- Q3a -->
+      <div id="q3a">
+        <div class="qa-header">
+          <span class="qa-label">Q1 · Part A</span>
+          <div class="qa-question">"Data explosion plays an important role in Big Data" — Justify the statement with proper explanation along with examples.</div>
+          <span class="qa-marks">8 Marks</span>
+        </div>
+        <div class="qa-answer">
+          <h3>Introduction</h3>
+          <p>Data Explosion refers to the rapid, massive, and continuous growth of data being generated every second from countless digital sources. It plays a central and foundational role in the emergence and importance of Big Data.</p>
+          <div class="def-box">"Without Data Explosion, Big Data would not exist. It is Data Explosion that created the need for Big Data technologies, infrastructures, and analytics."</div>
+
+          <h4>Justification 1: Data Explosion Created the Need for Big Data Storage</h4>
+          <p>Before the digital era, data was limited and manageable by traditional databases. Data Explosion caused data volumes to grow from gigabytes to petabytes and exabytes, making traditional storage completely inadequate. This directly gave rise to Big Data storage solutions such as HDFS, Cloud Storage, and Data Lakes.<br><em>Example: YouTube receives 500 hours of video uploads every single minute. Storing this requires distributed Big Data storage infrastructure — not traditional databases.</em></p>
+
+          <h4>Justification 2: Data Explosion Introduced the Concept of Data Variety</h4>
+          <p>As data exploded from multiple sources, it arrived in completely different formats — structured, semi-structured, and unstructured. This variety of data formats is a direct consequence of data explosion and is one of the defining characteristics of Big Data.<br><em>Example: Amazon generates structured transaction records, semi-structured product review JSONs, and unstructured customer images — all simultaneously at massive scale.</em></p>
+
+          <h4>Justification 3: Data Explosion Demanded Real-Time Processing</h4>
+          <p>The speed at which data explodes requires systems that can process it in real time. This gave rise to the Velocity dimension of Big Data and the development of real-time processing frameworks like Kafka and Spark Streaming.<br><em>Example: During a cricket World Cup final, Twitter experiences millions of tweets per minute — sentiment analysis tools must process this exploding stream in real time.</em></p>
+
+          <h4>Justification 4: Data Explosion Raised Data Quality Challenges</h4>
+          <p>As data exploded from diverse, uncontrolled sources, quality and reliability became questionable — introducing the Veracity challenge of Big Data. Fake profiles, sensor errors, and duplicate records became widespread.<br><em>Example: During elections, social media platforms experience an explosion of posts — many from fake accounts and bots, requiring sophisticated Big Data quality management tools.</em></p>
+
+          <h4>Justification 5: Data Explosion Created Business Value Opportunities</h4>
+          <p>The explosion of data from customer interactions provided organizations with an unprecedented opportunity to understand customers, predict trends, and make data-driven decisions — creating the Value dimension of Big Data.<br><em>Example: Netflix analyzes the explosion of viewer data to power its recommendation engine, which is responsible for 80% of content watched on the platform.</em></p>
+
+          <h3>Conclusion</h3>
+          <p>Data Explosion is not just related to Big Data — it is the root cause and driving force behind Big Data. Every characteristic of Big Data (all 6 V's) is a direct consequence of Data Explosion. Without understanding and managing Data Explosion, Big Data analytics and infrastructure would have no purpose or foundation.</p>
+        </div>
+      </div>
+
+      <!-- Q3b -->
+      <div id="q3b">
+        <div class="qa-header">
+          <span class="qa-label">Q1 · Part B</span>
+          <div class="qa-question">Differentiate between Big Data and Small Data with their processing architecture.</div>
+          <span class="qa-marks">7 Marks</span>
+        </div>
+        <div class="qa-answer">
+          <h3>Definitions</h3>
+          <p><strong>Small Data:</strong> Datasets small enough in volume, variety, and velocity to be stored and processed using traditional data management tools such as relational databases and spreadsheets.</p>
+          <p><strong>Big Data:</strong> Extremely large, diverse, and fast-moving datasets that exceed the capacity of traditional tools and require specialized distributed infrastructure.</p>
+
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Parameter</th><th>Small Data</th><th>Big Data</th></tr></thead>
+              <tbody>
+                <tr><td>Volume</td><td>MB to GB</td><td>TB to PB and beyond</td></tr>
+                <tr><td>Variety</td><td>Mostly structured</td><td>Structured + Semi + Unstructured</td></tr>
+                <tr><td>Velocity</td><td>Slow, batch processing</td><td>High speed, real-time</td></tr>
+                <tr><td>Storage</td><td>Single server / local DB</td><td>Distributed storage (HDFS)</td></tr>
+                <tr><td>Tools</td><td>Excel, MySQL, Oracle</td><td>Hadoop, Spark, Kafka, NoSQL</td></tr>
+                <tr><td>Processing</td><td>Sequential, single machine</td><td>Parallel, distributed cluster</td></tr>
+                <tr><td>Scalability</td><td>Vertical (upgrade one machine)</td><td>Horizontal (add more machines)</td></tr>
+                <tr><td>Schema</td><td>Fixed, predefined</td><td>Dynamic, flexible</td></tr>
+                <tr><td>Example</td><td>Student marks database</td><td>Facebook user activity logs</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Small Data Processing Architecture</h3>
+          <p>Uses a <strong>Centralized Single-Server Architecture</strong> — all data is stored and processed on a single machine using ACID-compliant relational databases (MySQL, PostgreSQL). Processing is sequential and vertical scaling is used to improve performance. Simple to set up and query using standard SQL.</p>
+
+          <h3>Big Data Processing Architecture</h3>
+          <p>Uses a <strong>Distributed Multi-Node Architecture</strong> — data is partitioned and distributed across multiple independent nodes. Processing is done in parallel across all nodes simultaneously using MapReduce or Spark. Horizontal scaling (adding more nodes) handles growing data. Follows Shared-Nothing Architecture where each node is completely independent.</p>
+
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Feature</th><th>Small Data Architecture</th><th>Big Data Architecture</th></tr></thead>
+              <tbody>
+                <tr><td>Design</td><td>Centralized single server</td><td>Distributed multi-node cluster</td></tr>
+                <tr><td>Scaling</td><td>Vertical</td><td>Horizontal</td></tr>
+                <tr><td>Fault Tolerance</td><td>Low</td><td>High (data replicated)</td></tr>
+                <tr><td>Storage System</td><td>Relational DB</td><td>HDFS, NoSQL, Data Lakes</td></tr>
+                <tr><td>Architecture Type</td><td>Shared Everything</td><td>Shared Nothing</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q4a -->
+      <div id="q4a">
+        <div class="qa-header">
+          <span class="qa-label">Q2 · Part A</span>
+          <div class="qa-question">Define the relation between Artificial Intelligence, Statistical Learning and Machine Learning with sample example.</div>
+          <span class="qa-marks">8 Marks</span>
+        </div>
+        <div class="qa-answer">
+          <h3>Introduction</h3>
+          <p>Artificial Intelligence, Statistical Learning, and Machine Learning are three closely related and overlapping fields in Data Science.</p>
+          <div class="def-box purple">"AI is the destination, Machine Learning is the vehicle, and Statistical Learning is the fuel that powers it."</div>
+
+          <h4>1. Artificial Intelligence (AI)</h4>
+          <p>AI is the broadest and most encompassing field that focuses on building machines and systems capable of performing tasks that normally require human intelligence — such as reasoning, learning, decision making, perception, and language understanding. It is the <strong>ultimate goal</strong> — creating intelligent machines. It encompasses many subfields including ML, NLP, Computer Vision, Robotics, and Expert Systems.<br><em>Example: A self-driving car perceives its environment through cameras and sensors, reasons about what actions to take, and makes decisions like braking or turning — mimicking human driving intelligence.</em></p>
+
+          <h4>2. Statistical Learning</h4>
+          <p>Statistical Learning is the mathematical and theoretical foundation that uses probability theory, statistics, and mathematical models to analyze data, identify patterns, and make inferences. It focuses on <strong>understanding and explaining</strong> relationships between variables and emphasizes model interpretability — not just prediction but understanding <em>why</em>. Core techniques include Regression, Hypothesis Testing, Probability Distributions, and Bayesian Inference.<br><em>Example: A statistician uses linear regression to model the relationship between a patient's age, weight, and blood pressure — not just to predict it but to understand which factors influence it most.</em></p>
+
+          <h4>3. Machine Learning (ML)</h4>
+          <p>Machine Learning is a subset of Artificial Intelligence that uses Statistical Learning principles to enable computers to automatically learn patterns from data and improve their performance without being explicitly programmed. Instead of manually writing rules, the machine discovers rules automatically from data. It works best with large datasets and focuses primarily on prediction accuracy.<br><em>Example: A spam email detector is trained on thousands of labeled emails, learns patterns automatically, and classifies new incoming emails without any manual rule writing.</em></p>
+
+          <h3>Relationship Between the Three Fields</h3>
+
+          <div class="diagram-box">
+            <div class="diagram-layer dl-ai">ARTIFICIAL INTELLIGENCE — Broad goal: Intelligent Machines</div>
+            <div class="diagram-arrow">↓ contains as subset</div>
+            <div class="diagram-layer dl-ml">MACHINE LEARNING — Practical: Learn from Data</div>
+            <div class="diagram-arrow">↓ built upon</div>
+            <div class="diagram-layer dl-sl">STATISTICAL LEARNING — Foundation: Math &amp; Stats Theory</div>
+          </div>
+
+          <h3>Real-World Example Connecting All Three</h3>
+          <p><strong>Problem: Build a system to diagnose diseases from medical reports</strong></p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Field</th><th>Role in the Example</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Statistical Learning</strong></td><td>Model the probability of a disease based on symptoms using Bayesian inference and regression analysis</td></tr>
+                <tr><td><strong>Machine Learning</strong></td><td>Train a classifier on thousands of past patient records to automatically learn which symptoms indicate which disease</td></tr>
+                <tr><td><strong>Artificial Intelligence</strong></td><td>Deploy the complete intelligent system that a doctor can interact with — it perceives the report, reasons about the diagnosis, and recommends treatment</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Parameter</th><th>Statistical Learning</th><th>Machine Learning</th><th>AI</th></tr></thead>
+              <tbody>
+                <tr><td>Scope</td><td>Narrow — mathematical</td><td>Medium — learning</td><td>Broad — intelligent systems</td></tr>
+                <tr><td>Focus</td><td>Inference &amp; understanding</td><td>Prediction &amp; accuracy</td><td>Intelligent behavior</td></tr>
+                <tr><td>Data Size</td><td>Small–Medium</td><td>Large</td><td>Any scale</td></tr>
+                <tr><td>Approach</td><td>Mathematical</td><td>Computational</td><td>Goal-oriented</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q4b -->
+      <div id="q4b">
+        <div class="qa-header">
+          <span class="qa-label">Q2 · Part B</span>
+          <div class="qa-question">Differentiate between Data Warehouse and Data Mining with the Data Science perspective.</div>
+          <span class="qa-marks">7 Marks</span>
+        </div>
+        <div class="qa-answer">
+          <h3>Definitions</h3>
+          <p><strong>Data Warehouse:</strong> A centralized repository that collects, stores, and manages large volumes of structured, historical data from multiple sources for reporting and analysis.</p>
+          <p><strong>Data Mining:</strong> The process of discovering hidden patterns, correlations, anomalies, and useful knowledge from large datasets using statistical, mathematical, and computational techniques.</p>
+
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Parameter</th><th>Data Warehouse</th><th>Data Mining</th></tr></thead>
+              <tbody>
+                <tr><td>Purpose</td><td>Store and organize data for easy retrieval</td><td>Discover hidden patterns and knowledge</td></tr>
+                <tr><td>Nature</td><td>Storage and management system</td><td>Analytical and knowledge discovery process</td></tr>
+                <tr><td>Function</td><td>Answers "What data do we have?"</td><td>Answers "What patterns exist in the data?"</td></tr>
+                <tr><td>Data Type</td><td>Structured, cleaned, historical</td><td>Structured, semi-structured, unstructured</td></tr>
+                <tr><td>Process</td><td>ETL — Extract, Transform, Load</td><td>KDD — Knowledge Discovery in Databases</td></tr>
+                <tr><td>Output</td><td>Organized, queryable data repository</td><td>Patterns, rules, predictions, insights</td></tr>
+                <tr><td>Tools</td><td>Teradata, Amazon Redshift, BigQuery</td><td>Weka, RapidMiner, Python Scikit-learn</td></tr>
+                <tr><td>Techniques</td><td>SQL queries, OLAP, data integration</td><td>Classification, Clustering, Association Rules</td></tr>
+                <tr><td>User</td><td>Business analysts, managers</td><td>Data scientists, researchers</td></tr>
+                <tr><td>Role in Data Science</td><td>Provides the data foundation</td><td>Performs actual analysis to extract value</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>How They Work Together in Data Science</h3>
+
+          <div class="pipeline" style="flex-direction: column; align-items: flex-start; gap: 0.4rem; padding: 1rem; background: var(--surface2); border-radius: 8px; border: 1px solid var(--border);">
+            <div style="display:flex; align-items:center; gap:0.5rem;"><div class="pipe-step">Raw Data Sources</div></div>
+            <div style="color:var(--text-muted); padding-left:1rem;">↓ ETL Process</div>
+            <div style="display:flex; align-items:center; gap:0.5rem;"><div class="pipe-step" style="color:var(--accent);">DATA WAREHOUSE — stores cleaned, organized historical data</div></div>
+            <div style="color:var(--text-muted); padding-left:1rem;">↓ Data extracted for analysis</div>
+            <div style="display:flex; align-items:center; gap:0.5rem;"><div class="pipe-step" style="color:var(--accent2);">DATA MINING — discovers patterns, rules, predictions</div></div>
+            <div style="color:var(--text-muted); padding-left:1rem;">↓</div>
+            <div style="display:flex; align-items:center; gap:0.5rem;"><div class="pipe-step" style="color:var(--green);">Business Insights &amp; Decisions</div></div>
+          </div>
+
+          <div class="def-box" style="margin-top:1.25rem;">"The Data Warehouse is the library, and Data Mining is the researcher who reads through all the books to find new knowledge."</div>
+
+          <h3>Example from Data Science Perspective</h3>
+          <p><strong>Scenario: A bank wants to understand and predict customer loan defaults</strong></p>
+          <p><strong>Data Warehouse Role:</strong> The bank's Data Warehouse stores 10 years of historical customer data — loan amounts, repayment history, credit scores, income levels — all cleaned, structured, and organized for easy access.</p>
+          <p><strong>Data Mining Role:</strong> Data Mining algorithms are applied on this warehouse data to discover patterns — for example, customers with income below ₹3 lakhs and more than 2 existing loans have an 85% probability of defaulting. This pattern was hidden in the data and revealed only through Data Mining.</p>
+
+          <div class="key-box">
+            <div class="key-box-title">Key Points to Remember</div>
+            <ul>
+              <li>Data Warehouse = Storage system; Data Mining = Analysis process</li>
+              <li>DW uses ETL; Data Mining uses KDD</li>
+              <li>Data Warehouse feeds data INTO Data Mining for analysis</li>
+              <li>Together they form the core of Data Science pipeline</li>
+              <li>DW answers "What data?" | Data Mining answers "What patterns?"</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>DSBDA Unit I · Complete Study Guide · <span>Data Science &amp; Big Data Analytics</span></p>
+  <p style="margin-top:0.5rem; color: #3a3f50;">Prepared for Exam Revision · All Topics + Q&amp;A Covered</p>
+</footer>
+
+</body>
+</html>
